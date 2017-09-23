@@ -7,6 +7,13 @@ class Token
   end
 end
 
+class ASTNode
+  attr_accessor :properties
+  def initialize(properties)
+    @properties = properties
+  end
+end
+
 def tokenizer(input)
   current = 0
   tokens = []
@@ -48,16 +55,61 @@ def tokenizer(input)
         current += 1
         char = input[current]
       end
-      token = Token.new('number', value)
+      token = Token.new('string', value)
       tokens.push(token)
     end
   end
   tokens
 end
 
-input = "(add 2 (subtract 4 2))"
+class Parser
+  attr_accessor :count, :tokens
 
-tokens = tokenizer(input)
-tokens.each do |token|
-  puts "#{token.type} #{token.value}"
+  def initialize(tokens)
+    @count = 0
+    @tokens = tokens
+  end
+
+  def parse
+    ast = ASTNode.new({ type: 'Program', body: [] })
+    while @count < @tokens.length
+      ast.properties[:body].push(walk)
+    end
+    ast
+  end
+
+  def walk
+    token = @tokens[@count]
+
+    if token.type == 'number'
+      @count += 1
+      return ASTNode.new({ type: 'NumberLiteral', value: token.value })
+    end
+
+    if token.type == 'string'
+      @count += 1
+      return ASTNode.new({ type: 'StringLiteral', value: token.value })
+    end
+
+    if token.type == 'paren' && token.value == '('
+      @count += 1
+      token = @tokens[@count]
+
+      node = ASTNode.new({ type: 'CallExpression', value: token.value, params: [] })
+      @count += 1
+      token = @tokens[@count]
+
+      while token.type != 'paren' || (token.type == 'paren' && token.value != ')')
+        node.properties[:params].push(walk)
+        token = @tokens[@count]
+      end
+      @count += 1
+      return node
+    end
+    raise 'Token not recognized.'
+  end
 end
+
+input = "(add 2 (subtract 4 2))"
+tokens = tokenizer(input)
+ast = Parser.new(tokens).parse
