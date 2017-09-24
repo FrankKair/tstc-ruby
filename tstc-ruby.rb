@@ -1,19 +1,4 @@
 #!/usr/bin/env ruby
-class Token
-  attr_accessor :type, :value
-  def initialize(type, value)
-    @type = type
-    @value = value
-  end
-end
-
-class ASTNode
-  attr_accessor :properties
-  def initialize(properties)
-    @properties = properties
-  end
-end
-
 def tokenizer(input)
   current = 0
   tokens = []
@@ -22,13 +7,13 @@ def tokenizer(input)
     char = input[current]
     
     if char == '('
-      token = Token.new('paren', '(')
+      token = { type: 'paren', value: '(' }
       tokens.push(token)
       current += 1
     end
 
     if char == ')'
-      token = Token.new('paren', ')')
+      token = { type: 'paren', value: ')' }
       tokens.push(token)
       current += 1
     end
@@ -44,7 +29,7 @@ def tokenizer(input)
         current += 1
         char = input[current]
       end
-      token = Token.new('number', value)
+      token = { type: 'number', value: value }
       tokens.push(token)
     end
 
@@ -55,7 +40,7 @@ def tokenizer(input)
         current += 1
         char = input[current]
       end
-      token = Token.new('string', value)
+      token = { type: 'string', value: value }
       tokens.push(token)
     end
   end
@@ -71,9 +56,9 @@ class Parser
   end
 
   def parse
-    ast = ASTNode.new({ type: 'Program', body: [] })
+    ast = { type: 'Program', body: []  }
     while @count < @tokens.length
-      ast.properties[:body].push(walk)
+      ast[:body].push(walk)
     end
     ast
   end
@@ -81,26 +66,26 @@ class Parser
   def walk
     token = @tokens[@count]
 
-    if token.type == 'number'
+    if token[:type] == 'number'
       @count += 1
-      return ASTNode.new({ type: 'NumberLiteral', value: token.value })
+      return { type: 'NumberLiteral', value: token[:value] }
     end
 
-    if token.type == 'string'
+    if token[:type] == 'string'
       @count += 1
-      return ASTNode.new({ type: 'StringLiteral', value: token.value })
+      return { type: 'StringLiteral', value: token[:value] }
     end
 
-    if token.type == 'paren' && token.value == '('
+    if token[:type] == 'paren' && token[:value] == '('
       @count += 1
       token = @tokens[@count]
 
-      node = ASTNode.new({ type: 'CallExpression', value: token.value, params: [] })
+      node = { type: 'CallExpression', value: token[:value], params: [] }
       @count += 1
       token = @tokens[@count]
 
-      while token.type != 'paren' || (token.type == 'paren' && token.value != ')')
-        node.properties[:params].push(walk)
+      while token[:type] != 'paren' || (token[:type] == 'paren' && token[:value] != ')')
+        node[:params].push(walk)
         token = @tokens[@count]
       end
       @count += 1
