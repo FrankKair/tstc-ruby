@@ -21,6 +21,7 @@ module Transformer
     when 'CallExpression'
       traverse_array(node[:params], node)
     when 'NumberLiteral'
+    when 'StringLiteral'
     else
       raise 'Token not recognized.'
     end

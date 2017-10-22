@@ -27,7 +27,7 @@ module Tokenizer
       if char =~ /[0-9]/
         value = ""
         while char =~ /[0-9]/
-          value << char
+          value.concat(char)
           current += 1
           char = input[current]
         end
@@ -38,7 +38,7 @@ module Tokenizer
       if char =~ /[a-z]/
         value = ""
         while char =~ /[a-z]/
-          value << char
+          value.concat(char)
           current += 1
           char = input[current]
         end
