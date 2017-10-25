@@ -9,6 +9,7 @@ module Transformer
   end
 
   private
+
   def traverse(ast)
     traverse_node(ast, {})
   end
@@ -31,7 +32,7 @@ module Transformer
     node_type = node[:type]
     case node_type
     when 'NumberLiteral'
-      parent_node[:context].push({ type: 'NumberLiteral', value: node[:value] })
+      parent_node[:context].push(type: 'NumberLiteral', value: node[:value])
     when 'CallExpression'
       expression = {
         type: 'CallExpression',

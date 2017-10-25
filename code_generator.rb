@@ -4,12 +4,12 @@ module CodeGenerator
   def generate(node)
     case node[:type]
     when 'Program'
-      node[:body].map { |node| generate(node) }.join("\n")
+      node[:body].map { |n| generate(n) }.join("\n")
     when 'ExpressionStatement'
       generate(node[:expression])
     when 'CallExpression'
       callee = generate(node[:callee])
-      arguments = node[:arguments].map { |argument| generate(argument) }.join(', ')
+      arguments = node[:arguments].map { |arg| generate(arg) }.join(', ')
       "#{callee}(#{arguments})"
     when 'Identifier'
       node[:name]

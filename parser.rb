@@ -7,14 +7,13 @@ class Parser
   end
 
   def parse
-    ast = { type: 'Program', body: []  }
-    while @count < @tokens.length
-      ast[:body].push(walk)
-    end
+    ast = { type: 'Program', body: [] }
+    ast[:body].push(walk) while @count < @tokens.length
     ast
   end
 
   private
+
   def walk
     token = @tokens[@count]
     if token[:type] == 'number'
