@@ -1,6 +1,4 @@
 module CodeGenerator
-  extend self
-
   def generate(node)
     case node[:type]
     when 'Program'
@@ -19,4 +17,6 @@ module CodeGenerator
       raise 'Code generator error'
     end
   end
+
+  module_function :generate
 end

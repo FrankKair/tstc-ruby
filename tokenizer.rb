@@ -1,6 +1,4 @@
 module Tokenizer
-  extend self
-
   def tokenize(input)
     current = 0
     tokens = []
@@ -45,4 +43,6 @@ module Tokenizer
     end
     tokens
   end
+
+  module_function :tokenize
 end

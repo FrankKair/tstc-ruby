@@ -1,6 +1,4 @@
 module Transformer
-  extend self
-
   def transform(ast)
     new_ast = { type: 'Program', body: [] }
     ast[:context] = new_ast[:body]
@@ -44,7 +42,10 @@ module Transformer
       }
       node[:context] = expression[:arguments]
       if parent_node[:type] != 'CallExpression'
-        expression_statement = { type: 'ExpressionStatement', expression: expression }
+        expression_statement = {
+          type: 'ExpressionStatement',
+          expression: expression
+        }
         parent_node[:context].push(expression_statement)
       else
         parent_node[:context].push(expression)
@@ -57,4 +58,10 @@ module Transformer
       traverse_node(node, parent_node)
     end
   end
+
+  module_function :transform,
+                  :traverse,
+                  :traverse_node,
+                  :visitor,
+                  :traverse_array
 end
